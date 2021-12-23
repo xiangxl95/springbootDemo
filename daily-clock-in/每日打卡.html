@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>每日打卡</title>
+    <script src="js/vue.js"></script>
+    <script src="js/jQuery.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/dayjs/1.10.6/dayjs.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/distpicker/2.0.7/distpicker.js"></script>
+    <!-- <script src="../jQuery/jquery.particleground.min.js"></script> -->
+    <link rel="stylesheet" href="每日打卡.css">
+</head>
+
+<body>
+    <div class="root">
+        <div class="flash">
+            <div class="flash-bar"></div>
+            <img src="http://xgfy.hdu.edu.cn/safety-management/static/img/banner1.e9bf0b8.jpg" />
+        </div>
+        <p>
+            温馨提示：不外出、不聚集、不吃野味，戴口罩、勤洗手、咳嗽有礼，开窗通风，发热就诊。<br>
+            每天下午3点前请提交打卡信息！
+        </p>
+
+        <form action="">
+            <p>基本信息</p>
+            姓名 <input type="text" class="name" v-model="userInfo.name"><br>
+            学号 <input type="number" class="number" v-model.number="userInfo.number">
+            <h3>目前所在城市</h3>
+            请选择目前所在城市 <br>
+
+            <div data-toggle="distpicker">
+                <select data-province="浙江省" v-model="userInfo.province"></select>
+                <select data-city="杭州市" v-model="userInfo.city"></select>
+                <select data-district="江干区" v-model="userInfo.district"></select>
+            </div>
+            <h4>1.近14天您的健康状况是？</h4>
+            <input type="radio" name="health" id="" v-model="userInfo.health" value="健康良好">健康良好 <br>
+            <input type="radio" name="health" id="" v-model="userInfo.health" value="新型冠状肺炎确诊">新型冠状肺炎确诊<br>
+            <input type="radio" name="health" id="" v-model="userInfo.health" value="新型冠状肺炎疑似病例">新型冠状肺炎疑似病例 <br>
+
+            <h4>2.您近14天生活状况是？</h4>
+            <input type="radio" name="livingConditions" id="" v-model="userInfo.livingConditions" value="正常在家">正常在家<br>
+            <input type="radio" name="livingConditions" id="" v-model="userInfo.livingConditions"
+                value="正常在校（未经学校审批，不得提前返校）">正常在校（未经学校审批，不得提前返校）<br>
+            <input type="radio" name="livingConditions" id="" v-model="userInfo.livingConditions"
+                value="政府集中隔离（指被属地管理部门要求至指定地点集中隔离并进行医学观察的）">政府集中隔离（指被属地管理部门要求至指定地点集中隔离并进行医学观察的）<br>
+            <input type="radio" name="livingConditions" id="" v-model="userInfo.livingConditions"
+                value="居家医学观察（收到社区等相关部门明确要求的）">居家医学观察（收到社区等相关部门明确要求的）<br>
+            <input type="radio" name="livingConditions" id="" v-model="userInfo.livingConditions"
+                value="其他（实习、找工作、在国外等）">其他（实习、找工作、在国外等）<br>
+
+            <h4>3.近14天您的晨检体温如何？</h4>
+            <input type="radio" name="temperature" id="" v-model="userInfo.temperature" value="37度以下">37度以下<br>
+            <input type="radio" name="temperature" id="" v-model="userInfo.temperature" value="37-37.3">37-37.3<br>
+            <input type="radio" name="temperature" id="" v-model="userInfo.temperature" value="37.3以上">37.3以上<br>
+            <input type="radio" name="temperature" id="" v-model="userInfo.temperature" value="其他疑似症状">其他疑似症状<br>
+
+            <h4>4.近14天您申领的杭州健康码是？(请到"支付宝-城市服务-选择当前城市为杭州-健康码"中领取)</h4>
+            <input type="radio" name="healthCode" id="" v-model="userInfo.healthCode" value="绿码">绿码<br>
+            <input type="radio" name="healthCode" id="" v-model="userInfo.healthCode" value="黄码">黄码<br>
+            <input type="radio" name="healthCode" id="" v-model="userInfo.healthCode" value="橙码">橙码<br>
+            <input type="radio" name="healthCode" id="" v-model="userInfo.healthCode" value="红码">红码<br>
+            <input type="radio" name="healthCode" id="" v-model="userInfo.healthCode" value="未申领">未申领<br>
+
+            <h4>5.近14天您是否密切接触过确诊病例或疑似病例？（有此类情况需第一时间报告年级辅导员）</h4>
+            <input type="radio" name="contactConfirmedCases" id="" v-model="userInfo.contactConfirmedCases"
+                value="否">否<br>
+            <input type="radio" name="contactConfirmedCases" id="" v-model="userInfo.contactConfirmedCases"
+                value="是">是<br>
+
+            <h4>6.近14天您是否经由中高风险地区（动态更新，具体查阅国务院客户端微信小程序）或政府集中隔离点返浙？（有此类情况需第一时间报告学院年级辅导员）</h4>
+            <input type="radio" name="throughRiskAreas" id="" v-model="userInfo.throughRiskAreas" value="否">否<br>
+            <input type="radio" name="throughRiskAreas" id="" v-model="userInfo.throughRiskAreas"
+                value="是，已做核酸检测，可生成通行码">是，已做核酸检测，可生成通行码<br>
+            <input type="radio" name="throughRiskAreas" id="" v-model="userInfo.throughRiskAreas"
+                value="是，未做核酸检测">是，未做核酸检测<br>
+
+            <h4> 7.近14天您的共同居住人员是否有以下这些情况之一：集中隔离（收治）或居家观察；杭州健康码红码，橙码或黄码；14天内从境外返回（除澳门地区）;出现其他有关疫情的异常情况。（有此类情况需第一时间报告学院年级辅导员）
+            </h4>
+            <input type="radio" name="coresident" id="" v-model="userInfo.coresident" value="否">否<br>
+            <input type="radio" name="coresident" id="" v-model="userInfo.coresident" value="是">是<br>
+
+            <h4>8.您是否已完成接种新冠疫苗？</h4>
+            <input type="radio" name="vaccine" id="" value="未接种" v-model="userInfo.vaccine">未接种<br>
+            <input type="radio" name="vaccine" id="" value="共一针-已完成" v-model="userInfo.vaccine">共一针-已完成<br>
+            <input type="radio" name="vaccine" id="" value="共二针-已完成第一针" v-model="userInfo.vaccine">共二针-已完成第一针<br>
+            <input type="radio" name="vaccine" id="" value="共二针-已完成第二针" v-model="userInfo.vaccine">共二针-已完成第二针<br>
+            <input type="radio" name="vaccine" id="" value="共三针-已完成第一针" v-model="userInfo.vaccine">共三针-已完成第一针<br>
+            <input type="radio" name="vaccine" id="" value="共三针-已完成第二针" v-model="userInfo.vaccine">共三针-已完成第二针<br>
+            <input type="radio" name="vaccine" id="" value="共三针-已完成第三针" v-model="userInfo.vaccine">共三针-已完成第三针<br>
+            <!-- <input type="button" value="提交"> -->
+            <button class="btn" @click="onSubmit($event)">提交</button>
+        </form>
+    </div>
+    <script>
+        Vue.config.productionTip = false; //阻止 vue 在启动时生成生产提示
+        const vm = new Vue({
+            el: '.root',
+            data: {
+                userInfo: {
+                    name: '',
+                    number: '',
+                    province: '浙江省',
+                    city: '杭州市',
+                    district: '江干区',
+                    health: '健康良好',
+                    livingConditions: '正常在家',
+                    temperature: '37度以下',
+                    healthCode: '绿码',
+                    contactConfirmedCases: '否',
+                    throughRiskAreas: '否',
+                    coresident: '否',
+                    vaccine: '未接种',
+                }
+            },
+            methods: {
+                // 返回日期
+                date() {
+                    // const date = new Date();
+                    // const year = date.getFullYear();
+                    // const month = date.getMonth() + 1;
+                    // const Date1 = date.getDate();
+                    // var timeStr = year + '年' + month + '月' + Date1 + '日';
+                    // return timeStr
+                    return dayjs().format('YYYY-MM-DD')
+                },
+                // 返回时分秒
+                time() {
+                    // const time = new Date();
+                    // let h = time.getHours();
+                    // h = h < 10 ? '0' + h : h;
+                    // let m = time.getMinutes();
+                    // m = m < 10 ? '0' + m : m;
+                    // let s = time.getSeconds();
+                    // s = s < 10 ? '0' + s : s;
+                    // let str = h + ':' + m;
+                    // return str;
+                    return dayjs().format(' HH:mm')
+                },
+                onSubmit(event) {
+                  let formData = JSON.stringify(this.userInfo);
+                  const params = new URLSearchParams();
+                  params.append('userInfo', formData);
+                  axios({
+                    method:"post",
+                    url:"http://localhost:8080/demo/saveUserInfo",
+                    headers: {
+                      'Content-Type':'application/x-www-form-urlencoded'
+                    },
+                    data:params,
+                    withCredentials:true
+                  }).then((res)=>{
+                        console.log(res);
+                    });
+
+
+                }
+
+            }
+        })
+        // console.log(vm.date());
+        vm.$set(vm.userInfo, 'date', vm.date())
+        // console.log(vm.time());
+        if (vm.time() == '08:30' || vm.time() == '22:48') {
+            alert('您今天未打卡')
+        }
+        $("#distpicker1").distpicker();
+
+
+    </script>
+</body>
+
+</html>
