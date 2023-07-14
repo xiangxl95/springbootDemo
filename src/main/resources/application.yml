@@ -1,0 +1,12 @@
+server:
+  servlet:
+    context-path: /demo #项目访问前缀
+spring:
+  datasource:
+    name: test  #数据库名
+    url: jdbc:mysql://172.25.36.254:3306/test #本机ip地址，用localhot或127.0.0.1时部署到docker无法访问
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver  #数据库链接驱动
+mybatis:
+  mapper-locations: classpath:mapper/*.xml  #配置映射文件
