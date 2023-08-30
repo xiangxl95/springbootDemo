@@ -45,7 +45,7 @@ public class UserInfoController {
     }
 
     /**
-     * 保存人员信息
+     * 查询人员信息
      * @param
      * @return
      */
